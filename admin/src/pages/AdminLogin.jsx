@@ -8,7 +8,7 @@ import "./AdminLayout.css";
 const { Title, Text } = Typography;
 
 export default function AdminLogin() {
-  const { login, isAuthenticated, isAdmin, isInitializing } = useAuth();
+  const { login, logout, isAuthenticated, isAdmin, isInitializing } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -20,8 +20,12 @@ export default function AdminLogin() {
     setLoading(true);
     try {
       const user = await login(values);
-      if (user.role !== "admin") setError("That account does not have staff access.");
-      else navigate("/", { replace: true });
+      if (user.role !== "admin") {
+        await logout();
+        setError("That account does not have staff access. Please use the Customer Portal.");
+      } else {
+        navigate("/", { replace: true });
+      }
     } catch (loginError) {
       setError(loginError.message);
     } finally {

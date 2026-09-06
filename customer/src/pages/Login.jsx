@@ -8,7 +8,7 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login } = useAuth();
+  const { login, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [params] = useSearchParams();
@@ -21,7 +21,12 @@ export default function Login() {
     setError("");
     setIsSubmitting(true);
     try {
-      await login(form);
+      const user = await login(form);
+      if (user?.role === "admin") {
+        await logout();
+        setError("This is the customer portal. Administrator accounts must sign in through the Admin Portal.");
+        return;
+      }
       navigate(next, { replace: true });
     } catch (submitError) {
       setError(submitError.message);
