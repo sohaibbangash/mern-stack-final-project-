@@ -6,6 +6,10 @@ export const orderApi = {
     headers: { "Idempotency-Key": idempotencyKey },
     body: { contact, paymentMethod },
   }),
+  createStripeCheckout: (contact, idempotencyKey) => request("/payments/stripe/checkout", {
+    method: "POST",
+    body: { contact, idempotencyKey },
+  }),
   list: () => request("/orders"),
   get: (id) => request(`/orders/${id}`),
   cancel: (id) => request(`/orders/${id}/cancel`, { method: "POST" }),

@@ -74,7 +74,7 @@ export default function AdminOrders() {
     { title: "Customer", key: "customer", render: (_, order) => <div><strong>{order.contact?.name}</strong><br /><Text type="secondary">{order.user?.email || "—"}</Text></div> },
     { title: "Items", key: "items", render: (_, order) => order.items.reduce((sum, item) => sum + item.quantity, 0) },
     { title: "Total", dataIndex: "total", render: (total) => formatPrice(total) },
-    { title: "Payment", key: "payment", render: (_, order) => `${order.paymentMethod === "mock_card" ? "Mock card" : "Cash"} · ${order.paymentStatus}` },
+    { title: "Payment", key: "payment", render: (_, order) => `${order.paymentMethod === "stripe" ? "Stripe" : order.paymentMethod === "mock_card" ? "Mock card" : "Cash"} · ${order.paymentStatus}` },
     { title: "Status", dataIndex: "status", render: (value) => <Tag color={STATUS_COLOUR[value]}>{value}</Tag> },
     {
       title: "Actions",

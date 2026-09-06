@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import mongoose from "mongoose";
 
 export const ORDER_STATUSES = ["pending", "confirmed", "preparing", "ready", "completed", "cancelled"];
-export const PAYMENT_METHODS = ["cash", "mock_card"];
+export const PAYMENT_METHODS = ["cash", "stripe", "mock_card"];
 export const PAYMENT_STATUSES = ["pending", "paid"];
 
 // The only moves an admin may make. Anything outside this table is rejected.
@@ -40,6 +40,8 @@ const orderSchema = new mongoose.Schema({
   paymentMethod: { type: String, enum: PAYMENT_METHODS, required: true, default: "cash" },
   paymentStatus: { type: String, enum: PAYMENT_STATUSES, required: true, default: "pending" },
   paymentReference: { type: String, default: "" },
+  stripeSessionId: { type: String, default: "" },
+  stripeCheckoutUrl: { type: String, default: "" },
   status: { type: String, enum: ORDER_STATUSES, default: "pending", index: true },
   statusHistory: {
     type: [new mongoose.Schema({ status: { type: String, enum: ORDER_STATUSES }, at: { type: Date, default: Date.now } }, { _id: false })],

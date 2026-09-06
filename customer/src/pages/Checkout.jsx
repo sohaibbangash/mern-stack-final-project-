@@ -26,7 +26,13 @@ export default function Checkout() {
     setIsSubmitting(true);
     try {
       idempotencyKey.current ??= globalThis.crypto.randomUUID();
-      const data = await orderApi.create(contact, paymentMethod, idempotencyKey.current);
+      const data = paymentMethod === "stripe"
+        ? await orderApi.createStripeCheckout(contact, idempotencyKey.current)
+        : await orderApi.create(contact, "cash", idempotencyKey.current);
+      if (paymentMethod === "stripe") {
+        window.location.assign(data.url);
+        return;
+      }
       await refresh();
       navigate(`/orders/${data.data._id}`, { replace: true, state: { message: data.message } });
     } catch (submitError) {
@@ -81,9 +87,9 @@ export default function Checkout() {
                 <input type="radio" name="paymentMethod" value="cash" checked={paymentMethod === "cash"} onChange={(event) => setPaymentMethod(event.target.value)} /> Cash on delivery
               </label>
               <label>
-                <input type="radio" name="paymentMethod" value="mock_card" checked={paymentMethod === "mock_card"} onChange={(event) => setPaymentMethod(event.target.value)} /> Mock card (Stripe test mode)
+                <input type="radio" name="paymentMethod" value="stripe" checked={paymentMethod === "stripe"} onChange={(event) => setPaymentMethod(event.target.value)} /> Card payment (Stripe test mode)
               </label>
-              <p className="line-meta">Mock card payments are for testing only and do not charge a real card.</p>
+              <p className="line-meta">You will be redirected to Stripe&apos;s secure test checkout. No real charge is made.</p>
             </fieldset>
             <button className="btn block" type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Placing order..." : `Place order · ${formatPrice(total)}`}

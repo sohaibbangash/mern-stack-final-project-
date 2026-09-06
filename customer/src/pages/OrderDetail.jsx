@@ -75,7 +75,7 @@ export default function OrderDetail() {
           <div className="summary-row total"><span>Total</span><span>{formatPrice(order.total)}</span></div>
         </div>
 
-        <p className="line-meta">Payment: {order.paymentMethod === "mock_card" ? "Mock card" : "Cash on delivery"} · {order.paymentStatus}</p>
+        <p className="line-meta">Payment: {order.paymentMethod === "stripe" ? "Stripe test card" : order.paymentMethod === "mock_card" ? "Mock card" : "Cash on delivery"} · {order.paymentStatus}</p>
 
         <h3 style={{ marginTop: 28, color: "var(--primary-color)" }}>Delivering to</h3>
         <p className="line-meta">{order.contact.name} · {order.contact.phone}</p>

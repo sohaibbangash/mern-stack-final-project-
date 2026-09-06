@@ -9,6 +9,7 @@ import { cartRouter } from "./routes/cartRoutes.js";
 import { menuRouter } from "./routes/menuRoutes.js";
 import { orderRouter } from "./routes/orderRoutes.js";
 import { reservationRouter } from "./routes/reservationRoutes.js";
+import { paymentRouter } from "./routes/paymentRoutes.js";
 
 export function createApp() {
   const app = express();
@@ -26,6 +27,7 @@ export function createApp() {
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   }));
+  app.use("/api/payments/stripe/webhook", express.raw({ type: "application/json" }));
   app.use(express.json({ limit: "1mb" }));
   app.use(cookieParser());
   app.use(globalLimiter);
@@ -37,6 +39,7 @@ export function createApp() {
   app.use("/api/cart", cartRouter);
   app.use("/api/orders", orderRouter);
   app.use("/api/reservations", reservationRouter);
+  app.use("/api/payments", paymentRouter);
   app.use("/api", menuRouter);
 
   app.use((req, res) => res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` }));
